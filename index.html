@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Fun World - Auto Days</title>
+    <title>Math Fun - Smart Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
         body {
@@ -18,18 +18,14 @@
             text-align: center;
         }
 
-        .container {
-            width: 95%;
-            max-width: 600px;
-            padding: 20px;
-        }
-
-        h1 { font-size: 34px; color: #FFDE59; text-shadow: 2px 2px #ff5757; margin-bottom: 30px; }
+        .container { width: 95%; max-width: 600px; padding: 20px; }
+        h1 { font-size: 34px; color: #FFDE59; text-shadow: 2px 2px #ff5757; }
 
         .menu-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
+            margin-top: 20px;
         }
 
         .category-card {
@@ -42,21 +38,16 @@
             box-shadow: 0 6px 0 rgba(0,0,0,0.3);
         }
 
-        .category-card:active { transform: translateY(4px); box-shadow: none; }
-
         .add { background-color: #FF5757; } 
         .sub { background-color: #5271FF; } 
         .multi { background-color: #7ED957; } 
         .divi { background-color: #FFBD59; } 
 
-        .icon { font-size: 35px; display: block; margin-bottom: 5px; }
-
-        /* ऑटो डेज़ मेनू */
         #days-menu { display: none; }
 
         .days-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* दो कॉलम में डेज़ */
+            grid-template-columns: 1fr 1fr;
             gap: 12px;
             margin-top: 20px;
         }
@@ -66,14 +57,10 @@
             color: #0d2a3a;
             padding: 12px;
             border-radius: 15px;
-            font-size: 18px;
             text-decoration: none;
             font-weight: bold;
             box-shadow: 0 4px #ccc;
-            transition: 0.2s;
         }
-
-        .day-btn:active { transform: translateY(3px); box-shadow: none; }
 
         .back-btn {
             margin-top: 30px;
@@ -83,57 +70,57 @@
             padding: 10px 25px;
             border-radius: 50px;
             cursor: pointer;
-            font-family: 'Fredoka One', cursive;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        
         <div id="main-menu">
             <h1>Math Fun World 🌟</h1>
             <div class="menu-grid">
-                <button class="category-card add" onclick="generateDays('Addition', 'add')">
-                    <span class="icon">➕</span> Addition
-                </button>
-                <button class="category-card sub" onclick="generateDays('Subtraction', 'sub')">
-                    <span class="icon">➖</span> Subtraction
-                </button>
-                <button class="category-card multi" onclick="generateDays('Multiplication', 'multi')">
-                    <span class="icon">✖️</span> Multiplication
-                </button>
-                <button class="category-card divi" onclick="generateDays('Division', 'div')">
-                    <span class="icon">➗</span> Division
-                </button>
+                <button class="category-card add" onclick="showDays('Addition')">➕ Addition</button>
+                <button class="category-card sub" onclick="showDays('Subtraction')">➖ Subtraction</button>
+                <button class="category-card multi" onclick="showDays('Multiplication')">✖️ Multiplication</button>
+                <button class="category-card divi" onclick="showDays('Division')">➗ Division</button>
             </div>
         </div>
 
         <div id="days-menu">
             <h1 id="selected-title">Topic</h1>
-            <div class="days-grid" id="days-container">
-                </div>
+            <div class="days-grid" id="days-container"></div>
             <button class="back-btn" onclick="goBack()">⬅️ पीछे जाएँ</button>
         </div>
-
     </div>
 
     <script>
-        // यहाँ आप संख्या बदल सकते हैं (जैसे 10 की जगह 30 कर सकते हैं)
-        const totalDays = 10; 
+        // --- सेटिंग्स: यहाँ लिखें कि किस टॉपिक में कितने पेज (Days) तैयार हैं ---
+        const quizData = {
+            'Addition': { prefix: 'add', count: 5 },       // यहाँ 5 पेज हैं
+            'Subtraction': { prefix: 'sub', count: 1 },    // यहाँ अभी सिर्फ 1 पेज है
+            'Multiplication': { prefix: 'multi', count: 0 }, // यहाँ अभी 0 (कुछ नहीं दिखेगा)
+            'Division': { prefix: 'div', count: 0 }        // यहाँ अभी 0
+        };
 
-        function generateDays(topicName, prefix) {
+        function showDays(topic) {
             document.getElementById('main-menu').style.display = 'none';
             document.getElementById('days-menu').style.display = 'block';
-            document.getElementById('selected-title').innerText = topicName;
+            document.getElementById('selected-title').innerText = topic;
 
             const container = document.getElementById('days-container');
-            container.innerHTML = ""; // पिछला डेटा साफ़ करें
+            container.innerHTML = ""; 
 
-            // Loop: जो अपने आप बटन बनाएगा
-            for (let i = 1; i <= totalDays; i++) {
+            const data = quizData[topic];
+
+            if (data.count === 0) {
+                container.innerHTML = "<p>जल्द आ रहा है... (Coming Soon)</p>";
+                return;
+            }
+
+            // सिर्फ उतने ही बटन बनेंगे जितना 'count' में लिखा है
+            for (let i = 1; i <= data.count; i++) {
                 const link = document.createElement('a');
-                link.href = `${prefix}-day${i}.html`;
+                link.href = `${data.prefix}-day${i}.html`;
                 link.className = 'day-btn';
                 link.innerHTML = `Day ${i} 🚀`;
                 container.appendChild(link);
@@ -145,6 +132,5 @@
             document.getElementById('days-menu').style.display = 'none';
         }
     </script>
-
 </body>
 </html>
