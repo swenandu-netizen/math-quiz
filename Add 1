@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Quiz - Day 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        /* CSS: डिजाइन जो बच्चों को पसंद आए */
+        body {
+            font-family: 'Fredoka One', cursive;
+            background: #0d2a3a;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            text-align: center;
+        }
+
+        #quiz-card {
+            background: white;
+            padding: 25px;
+            border-radius: 30px;
+            box-shadow: 0 10px 0 #1e3a4a;
+            width: 90%;
+            max-width: 400px;
+            color: #333;
+            position: relative;
+        }
+
+        /* टॉप स्कोर और सवाल नंबर */
+        .top-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #5271FF;
+            border-bottom: 2px dashed #ddd;
+            padding-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .question-box {
+            font-size: 55px;
+            margin: 25px 0;
+            color: #2f3542;
+            background: #fdf2f2;
+            border-radius: 20px;
+            padding: 15px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            background: #5271FF;
+            color: white;
+            border: none;
+            padding: 20px;
+            font-size: 26px;
+            border-radius: 20px;
+            box-shadow: 0 6px 0 #3a53c4;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .btn:active { box-shadow: none; transform: translateY(6px); }
+
+        /* सही और गलत के रंग */
+        .correct { background: #7ED957 !important; box-shadow: 0 6px 0 #5ca63d !important; }
+        .wrong { background: #FF5757 !important; box-shadow: 0 6px 0 #c43a3a !important; }
+
+        /* रिजल्ट स्क्रीन */
+        #result-screen { display: none; }
+        #game-area { display: block; }
+        
+        .back-home {
+            margin-top: 20px;
+            display: inline-block;
+            color: #5271FF;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        #final-emoji { font-size: 70px; margin: 10px 0; }
+        #compliment-text { color: #FF5757; font-size: 28px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+<div id="quiz-card">
+    <div id="game-area">
+        <div class="top-info">
+            <span>सवाल: <span id="q-num">1</span>/5</span>
+            <span style="color: #7ED957;">स्कोर: <span id="score">0</span></span>
+        </div>
+
+        <div class="question-box" id="ques-text">...</div>
+
+        <div class="options-grid" id="options-box"></div>
+    </div>
+
+    <div id="result-screen">
+        <div id="final-emoji">🎉</div>
+        <div id="compliment-text">WOW! आप ग्रेट हो!</div>
+        <p style="font-size: 24px; margin-bottom: 25px;">आपका स्कोर: <span id="final-score">0</span>/5</p>
+        
+        <button class="btn" style="background:#7ED957; box-shadow:0 6px 0 #5ca63d; width:100%" 
+                onclick="window.location.reload();">
+            फिर से खेलें 🔄
+        </button>
+        
+        <br><br>
+        <a href="index.html" class="back-home">⬅️ होम पेज पर वापस जाएँ</a>
+    </div>
+</div>
+
+<audio id="correct-sound" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
+<audio id="wrong-sound" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3"></audio>
+<audio id="cheer-sound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
+
+<script>
+    /* JAVASCRIPT: गेम का लॉजिक */
+    const questions = [
+        { q: "2 + 3", opt: [4, 5, 6, 3], a: 5 },
+        { q: "1 + 4", opt: [3, 4, 5, 6], a: 5 },
+        { q: "3 + 3", opt: [5, 6, 7, 8], a: 6 },
+        { q: "5 + 2", opt: [7, 8, 9, 10], a: 7 },
+        { q: "4 + 0", opt: [0, 4, 40, 1], a: 4 }
+    ];
+
+    let currentIdx = 0;
+    let score = 0;
+
+    function loadQuestion() {
+        const qData = questions[currentIdx];
+        document.getElementById("q-num").innerText = currentIdx + 1;
+        document.getElementById("ques-text").innerText = qData.q + " = ?";
+        
+        const box = document.getElementById("options-box");
+        box.innerHTML = "";
+
+        qData.opt.forEach(val => {
+            const btn = document.createElement("button");
+            btn.innerText = val;
+            btn.className = "btn";
+            btn.onclick = () => checkAnswer(btn, val);
+            box.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(btn, val) {
+        const btns = document.querySelectorAll(".options-grid .btn");
+        btns.forEach(b => b.disabled = true); // जवाब देने के बाद बाकी बटन बंद
+
+        if(val === questions[currentIdx].a) {
+            btn.classList.add("correct");
+            document.getElementById("correct-sound").play();
+            score++;
+            document.getElementById("score").innerText = score;
+        } else {
+            btn.classList.add("wrong");
+            document.getElementById("wrong-sound").play();
+        }
+
+        setTimeout(() => {
+            currentIdx++;
+            if(currentIdx < questions.length) {
+                loadQuestion();
+            } else {
+                showFinalResult();
+            }
+        }, 1000);
+    }
+
+    function showFinalResult() {
+        document.getElementById("game-area").style.display = "none";
+        document.getElementById("result-screen").style.display = "block";
+        document.getElementById("final-score").innerText = score;
+
+        const compText = document.getElementById("compliment-text");
+        const compEmoji = document.getElementById("final-emoji");
+
+        // स्कोर के हिसाब से कॉम्प्लीमेंट्स
+        if (score === 5) {
+            compText.innerText = "WOW! आप जीनियस हो! 🔥";
+            compEmoji.innerText = "🏆";
+            document.getElementById("cheer-sound").play();
+        } else if (score >= 3) {
+            compText.innerText = "बहुत अच्छे! आप ग्रेट हो! ✨";
+            compEmoji.innerText = "🌟";
+            document.getElementById("cheer-sound").play();
+        } else {
+            compText.innerText = "कोशिश जारी रखें! 💪";
+            compEmoji.innerText = "👍";
+        }
+    }
+
+    // गेम शुरू करने के लिए पहला सवाल लोड करें
+    loadQuestion();
+</script>
+
+</body>
+</html>
+
