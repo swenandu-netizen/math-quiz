@@ -19,13 +19,12 @@
         }
 
         .container { width: 95%; max-width: 600px; padding: 20px; }
-        h1 { font-size: 34px; color: #FFDE59; text-shadow: 2px 2px #ff5757; }
+        h1 { font-size: 34px; color: #FFDE59; text-shadow: 2px 2px #ff5757; margin-bottom: 25px; }
 
         .menu-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-top: 20px;
         }
 
         .category-card {
@@ -36,7 +35,10 @@
             color: white;
             border: none;
             box-shadow: 0 6px 0 rgba(0,0,0,0.3);
+            transition: 0.2s;
         }
+
+        .category-card:active { transform: translateY(4px); box-shadow: none; }
 
         .add { background-color: #FF5757; } 
         .sub { background-color: #5271FF; } 
@@ -46,21 +48,26 @@
         #days-menu { display: none; }
 
         .days-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            flex-direction: column;
             gap: 12px;
+            align-items: center;
             margin-top: 20px;
         }
 
         .day-btn {
             background: white;
             color: #0d2a3a;
-            padding: 12px;
+            padding: 15px;
+            width: 80%;
             border-radius: 15px;
             text-decoration: none;
             font-weight: bold;
             box-shadow: 0 4px #ccc;
+            font-size: 20px;
         }
+
+        .day-btn:active { transform: translateY(3px); box-shadow: none; }
 
         .back-btn {
             margin-top: 30px;
@@ -70,6 +77,7 @@
             padding: 10px 25px;
             border-radius: 50px;
             cursor: pointer;
+            font-family: 'Fredoka One', cursive;
         }
     </style>
 </head>
@@ -89,17 +97,17 @@
         <div id="days-menu">
             <h1 id="selected-title">Topic</h1>
             <div class="days-grid" id="days-container"></div>
-            <button class="back-btn" onclick="goBack()">⬅️ पीछे जाएँ</button>
+            <button class="back-btn" onclick="goBack()">⬅️ वापस जाएँ</button>
         </div>
     </div>
 
     <script>
-        // --- सेटिंग्स: यहाँ लिखें कि किस टॉपिक में कितने पेज (Days) तैयार हैं ---
+        // --- सेटिंग्स: यहाँ तय करें कि कितने पेज दिखाने हैं ---
         const quizData = {
-            'Addition': { prefix: 'add', count: 1 },       // यहाँ 5 पेज हैं
-            'Subtraction': { prefix: 'sub', count: 0 },    // यहाँ अभी सिर्फ 1 पेज है
-            'Multiplication': { prefix: 'multi', count: 0 }, // यहाँ अभी 0 (कुछ नहीं दिखेगा)
-            'Division': { prefix: 'div', count: 0 }        // यहाँ अभी 0
+            'Addition': { prefix: 'add', count: 1 },       
+            'Subtraction': { prefix: 'sub', count: 0 },    
+            'Multiplication': { prefix: 'multi', count: 0 }, 
+            'Division': { prefix: 'div', count: 0 }        
         };
 
         function showDays(topic) {
@@ -112,12 +120,7 @@
 
             const data = quizData[topic];
 
-            if (data.count === 0) {
-                container.innerHTML = "<p>जल्द आ रहा है... (Coming Soon)</p>";
-                return;
-            }
-
-            // सिर्फ उतने ही बटन बनेंगे जितना 'count' में लिखा है
+            // लूप सिर्फ उतनी बार चलेगा जितना 'count' में लिखा है (अभी 1 बार)
             for (let i = 1; i <= data.count; i++) {
                 const link = document.createElement('a');
                 link.href = `${data.prefix}-day${i}.html`;
