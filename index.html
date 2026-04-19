@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Fun World - Kids Learning</title>
+    <title>Math Fun World - Master Home</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Fredoka One', cursive;
-            background: #0d2a3a; /* डार्क ब्लू बैकग्राउंड (आपकी इमेज जैसा) */
+            background: #0d2a3a;
             margin: 0;
             display: flex;
             justify-content: center;
@@ -47,14 +47,14 @@
         .category-card:active { transform: translateY(8px); box-shadow: none; }
 
         /* बटन के रंग */
-        .add { background-color: #FF5757; } /* Red */
-        .sub { background-color: #5271FF; } /* Blue */
-        .multi { background-color: #7ED957; } /* Green */
-        .divi { background-color: #FFBD59; } /* Orange */
+        .add { background-color: #FF5757; } 
+        .sub { background-color: #5271FF; } 
+        .multi { background-color: #7ED957; } 
+        .divi { background-color: #FFBD59; } 
 
         .icon { font-size: 40px; display: block; margin-bottom: 10px; }
 
-        /* डेज़ मेनू (शुरुआत में छुपा रहेगा) */
+        /* डेज़ मेनू */
         #days-menu { display: none; }
 
         .days-list {
@@ -67,7 +67,7 @@
         .day-btn {
             background: white;
             color: #0d2a3a;
-            width: 80%;
+            width: 85%;
             padding: 15px;
             border-radius: 50px;
             font-size: 20px;
@@ -75,6 +75,7 @@
             font-weight: bold;
             box-shadow: 0 5px #ccc;
             transition: 0.2s;
+            display: block;
         }
 
         .day-btn:active { transform: translateY(5px); box-shadow: none; }
@@ -97,16 +98,16 @@
         <div id="main-menu">
             <h1>Math Fun Quiz 🌟</h1>
             <div class="menu-grid">
-                <button class="category-card add" onclick="showDays('Addition')">
+                <button class="category-card add" onclick="showDays('Addition', 'add')">
                     <span class="icon">➕</span> Addition
                 </button>
-                <button class="category-card sub" onclick="showDays('Subtraction')">
+                <button class="category-card sub" onclick="showDays('Subtraction', 'sub')">
                     <span class="icon">➖</span> Subtraction
                 </button>
-                <button class="category-card multi" onclick="showDays('Multiplication')">
+                <button class="category-card multi" onclick="showDays('Multiplication', 'multi')">
                     <span class="icon">✖️</span> Multiplication
                 </button>
-                <button class="category-card divi" onclick="showDays('Division')">
+                <button class="category-card divi" onclick="showDays('Division', 'div')">
                     <span class="icon">➗</span> Division
                 </button>
             </div>
@@ -115,11 +116,11 @@
         <div id="days-menu">
             <h1 id="selected-title">Topic</h1>
             <div class="days-list">
-                <a href="Add 1.html" class="day-btn">Day 1 🍎</a>
-                <a href="#" class="day-btn">Day 2 🍊</a>
-                <a href="#" class="day-btn">Day 3 🍇</a>
-                <a href="#" class="day-btn">Day 4 🍓</a>
-                <a href="#" class="day-btn">Day 5 🍍</a>
+                <a id="day1-link" href="#" class="day-btn">Day 1 🍎</a>
+                <a id="day2-link" href="#" class="day-btn">Day 2 🍊</a>
+                <a id="day3-link" href="#" class="day-btn">Day 3 🍇</a>
+                <a id="day4-link" href="#" class="day-btn">Day 4 🍓</a>
+                <a id="day5-link" href="#" class="day-btn">Day 5 🍍</a>
             </div>
             <button class="back-btn" onclick="goBack()">⬅️ वापस जाएँ</button>
         </div>
@@ -127,10 +128,19 @@
     </div>
 
     <script>
-        function showDays(topic) {
+        function showDays(topicName, prefix) {
+            // मेन मेनू छुपाएं और डेज़ मेनू दिखाएं
             document.getElementById('main-menu').style.display = 'none';
             document.getElementById('days-menu').style.display = 'block';
-            document.getElementById('selected-title').innerText = topic;
+            document.getElementById('selected-title').innerText = topicName;
+
+            // जादुई लिंक अपडेट करना
+            // अगर Addition चुना तो prefix 'add' होगा, जिससे लिंक 'add-day1.html' बनेगा
+            document.getElementById('day1-link').href = prefix + "-day1.html";
+            document.getElementById('day2-link').href = prefix + "-day2.html";
+            document.getElementById('day3-link').href = prefix + "-day3.html";
+            document.getElementById('day4-link').href = prefix + "-day4.html";
+            document.getElementById('day5-link').href = prefix + "-day5.html";
         }
 
         function goBack() {
@@ -141,4 +151,3 @@
 
 </body>
 </html>
-
